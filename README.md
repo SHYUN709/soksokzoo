@@ -3,7 +3,7 @@
 > 내 안에 사는 동물은 누구일까?
 > 80개 문장에 답하면 나를 닮은 동물 캐릭터와 찰떡 궁합, 살짝 안 맞는 궁합을 알려주는 자기이해 테스트.
 
-**테스트 하러 가기 → https://shyun709.github.io/psychological-test/**
+**테스트 하러 가기 → https://shyun709.github.io/soksokzoo/**
 
 ---
 
