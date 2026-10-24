@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="내 안에 사는 동물은? 80문항 자기이해 검사와 궁합">
+<meta name="description" content="내 안에 사는 동물은? 30문항 자기이해 테스트와 궁합">
 <meta property="og:title" content="속마음 동물원">
+<meta property="og:url" content="https://soksokzoo.vercel.app/">
 <meta property="og:description" content="내 안에 사는 동물은 누구일까? 찰떡 궁합까지 알려줘">
 <title>속마음 동물원</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: 단일 컬럼 — 소개 → 80문항 → 캐릭터 결과(궁합) → 스토리 카드 → 상세 지도 → AI 인터뷰 */
+/* Layout: 단일 컬럼 — 소개 → 30/80문항 → 캐릭터 결과(궁합) → 스토리 카드 → 상세 지도 → AI 인터뷰 */
 :root{
   --bg:#F4F2EE; --surface:#FFFFFF; --ink:#22201C; --muted:#6B665D; --line:#E2DED6;
   --self:#3E6FD8; --self-soft:rgba(62,111,216,.15);
@@ -50,11 +51,6 @@ p{margin:0}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .note{font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
 .status{font-size:13px;color:var(--muted)}
-.btn.cta{background:var(--self);border-color:var(--self);color:var(--surface);font-size:16px;padding:14px 22px}
-.ai-panel{border:2px solid var(--self)}
-.nudge{background:var(--self-soft);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.nudge p{flex:1 1 220px}
-@media (max-width:560px){.btn.cta{width:100%}}
 
 /* intro */
 .zoo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
@@ -106,7 +102,7 @@ p{margin:0}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media (max-width:560px){.charts{grid-template-columns:1fr}}
 .chart{display:flex;flex-direction:column;gap:10px;min-width:0}
-.chart svg{width:100%;max-width:300px;margin:0 auto;display:block}
+.chart svg{width:100%;max-width:340px;margin:0 auto;display:block}
 .bars{display:flex;flex-direction:column;gap:6px;font-size:13px}
 .bar{display:grid;grid-template-columns:72px 1fr 34px;gap:8px;align-items:center}
 .bar .track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
@@ -137,11 +133,12 @@ details summary{cursor:pointer;font-weight:600}
   <!-- INTRO -->
   <section id="intro" class="wrap">
     <div style="display:flex;flex-direction:column;gap:12px">
-      <span class="eyebrow">80문항 · 약 10분</span>
+      <span class="eyebrow">30문항 · 약 4분</span>
       <h1 id="brandTitle">속마음 동물원</h1>
-      <p>내 안에 사는 동물은 누구일까? 80개 문장에 답하면 <b>나를 닮은 동물 캐릭터</b>와 <b>찰떡 궁합 · 살짝 안 맞는 궁합</b>을 알려줘. 결과는 인스타 스토리 카드로 바로 저장할 수 있어.</p>
+      <p>내 안에 사는 동물은 누구일까? 30개 문장에 답하면 <b>나를 닮은 동물 캐릭터</b>와 <b>찰떡 궁합 · 살짝 안 맞는 궁합</b>을 알려줘. 결과는 인스타 스토리 카드로 바로 저장할 수 있어.</p>
       <div class="row">
         <button class="btn" id="startBtn">내 동물 찾기</button>
+        <button class="btn ghost" id="fullBtn">정밀 검사 (80문항)</button>
         <button class="btn ghost" id="resumeBtn" hidden>이어서 하기</button>
       </div>
     </div>
@@ -168,11 +165,6 @@ details summary{cursor:pointer;font-weight:600}
   <!-- RESULT -->
   <section id="result" class="wrap" hidden>
     <div class="hero-card" id="heroCard"></div>
-
-    <div class="nudge" id="aiNudge" hidden>
-      <p><b>아직 끝이 아니야.</b> 아래 AI 심층 인터뷰에서 질문 3개에 답하면 내 동물이 진짜 맞는지 AI가 다시 봐줘.</p>
-      <button class="btn cta" id="aiNudgeBtn">AI 질문 3개 받기 ↓</button>
-    </div>
 
     <div class="panel" id="aboutPanel"></div>
 
@@ -204,23 +196,23 @@ details summary{cursor:pointer;font-weight:600}
       <div class="charts">
         <div class="chart">
           <span class="part self">나는 어떤 사람?</span>
-          <svg id="radarSelf" viewBox="0 0 300 300" role="img" aria-label="성향 오각형 차트"></svg>
+          <svg id="radarSelf" viewBox="-45 -8 390 316" role="img" aria-label="성향 오각형 차트"></svg>
           <div class="bars" id="barsSelf"></div>
         </div>
         <div class="chart">
           <span class="part other">나의 기준</span>
-          <svg id="radarOther" viewBox="0 0 300 300" role="img" aria-label="기준 오각형 차트"></svg>
+          <svg id="radarOther" viewBox="-45 -8 390 316" role="img" aria-label="기준 오각형 차트"></svg>
           <div class="bars" id="barsOther"></div>
         </div>
       </div>
     </div>
 
-    <div class="panel ai-panel" id="aiPanel">
+    <div class="panel" id="aiPanel">
       <h3>AI 심층 인터뷰</h3>
-      <p class="muted" id="aiIntro">점수가 애매하게 갈린 부분을 AI가 질문 3개로 더 물어봐. <b>① 질문 받기 → ② 답 쓰기 → ③ 최종 해석 받기</b> 순서로 진행해.</p>
-      <div class="row"><button class="btn cta" id="aiStart">① AI 질문 3개 받기</button><span class="status" id="aiStatus"></span></div>
+      <p class="muted" id="aiIntro">점수가 애매하게 갈린 부분을 AI가 질문 3개로 더 물어봐. 답하면 최종 해석을 써줘.</p>
+      <div class="row"><button class="btn" id="aiStart">질문 받기</button><span class="status" id="aiStatus"></span></div>
       <div class="qa" id="qaBox" hidden></div>
-      <div class="row" id="aiSubmitRow" hidden><button class="btn cta" id="aiSubmit">③ 최종 해석 받기</button><button class="btn ghost" id="aiStop" hidden>중지</button></div>
+      <div class="row" id="aiSubmitRow" hidden><button class="btn" id="aiSubmit">최종 해석 받기</button><button class="btn ghost" id="aiStop" hidden>중지</button></div>
       <div class="ai-out" id="aiOut"></div>
     </div>
 
@@ -235,6 +227,11 @@ details summary{cursor:pointer;font-weight:600}
       </details>
     </div>
 
+    <div class="panel" id="fullOffer">
+      <h3>결과가 좀 애매해?</h3>
+      <p class="muted">빠른 검사는 축마다 3문항이라 점수가 비슷하면 결과가 바뀔 수 있어. 정밀 검사(80문항, 약 10분)는 축마다 8문항으로 더 정확하게 봐.</p>
+      <div class="row"><button class="btn ghost" id="goFull">정밀 검사 하러 가기</button></div>
+    </div>
     <div class="row"><button class="btn ghost" id="retake">다시 검사하기</button></div>
   </section>
 </div>
@@ -242,7 +239,7 @@ details summary{cursor:pointer;font-weight:600}
 <script>
 /* ===== 설정: 이름·주소는 여기서만 바꾸면 돼 ===== */
 const BRAND = "속마음 동물원";
-const SITE_URL = "shyun709.github.io/soksokzoo";
+const SITE_URL = "soksokzoo.vercel.app";
 
 /* ===== 캐릭터 그림 (SVG) ===== */
 const EYES = (lx,rx,y)=>`<circle cx="${lx}" cy="${y}" r="6.5" fill="#2A2522"/><circle cx="${rx}" cy="${y}" r="6.5" fill="#2A2522"/><circle cx="${lx+2}" cy="${y-2.5}" r="2" fill="#fff"/><circle cx="${rx+2}" cy="${y-2.5}" r="2" fill="#fff"/>`;
@@ -332,13 +329,20 @@ const POOL = {
   C:[["음악, 영화, 공간 등에서 나만의 취향이 확실하다."],["같은 일이라도 멋있고 세련되게 하고 싶다."],["전시, 공연, 여행 같은 경험에 쓰는 돈은 아깝지 않다."],["사람을 볼 때 그 사람의 분위기나 교양을 눈여겨본다."],["유행을 따르기보다 나에게 어울리는 스타일을 찾는다."],["카페나 식당을 고를 때 분위기를 제일 먼저 본다."],["옷이나 물건은 기능만 괜찮으면 디자인은 상관없다.",1],["많이 팔리는 유명한 거면 대체로 믿고 고른다.",1]]
 };
 /* 같은 축이 연달아 나오지 않게 섞고, 역문항은 앞쪽 몰림을 피하려 순서를 돌려 배치 */
-function interleave(keys){
-  const out=[], n=POOL[keys[0]].length, order=[0,6,1,2,7,3,4,5];
-  order.forEach((j,round)=>{ const ks = keys.map((_,i)=>keys[(i+round*2)%keys.length]); ks.forEach(k=>{ const [t,rev]=POOL[k][j]; out.push([k,t,!!rev]); }); });
+/* 빠른 검사: 축마다 대표 문항 2개 + 역문항 1개 (표시 순서대로) */
+const QUICK = {R:[0,6,4], M:[0,7,2], H:[0,6,2], I:[0,7,1], A:[0,6,1], RL:[0,6,1], T:[0,7,1], MN:[1,7,5], S:[0,6,5], C:[0,6,5]};
+const FULL_ORDER = [0,6,1,2,7,3,4,5];
+function interleave(keys, mode){
+  const out=[], rounds = mode==="quick" ? 3 : FULL_ORDER.length;
+  for(let round=0; round<rounds; round++){
+    const ks = keys.map((_,i)=>keys[(i+round*2)%keys.length]);
+    ks.forEach(k=>{ const j = mode==="quick" ? QUICK[k][round] : FULL_ORDER[round]; const [t,rev]=POOL[k][j]; out.push([k,t,!!rev]); });
+  }
   return out;
 }
-const ITEMS = [...interleave(["R","M","H","I","A"]), ...interleave(["RL","T","MN","S","C"])];
-const SELF_COUNT = 40;
+let MODE="quick", ITEMS=[], SELF_COUNT=0;
+function setMode(m){ MODE = m==="full" ? "full" : "quick"; ITEMS=[...interleave(["R","M","H","I","A"],MODE), ...interleave(["RL","T","MN","S","C"],MODE)]; SELF_COUNT=ITEMS.length/2; }
+setMode("quick");
 const LABELS = ["전혀 아니다","아니다","보통","그렇다","매우 그렇다"];
 const ALL = [...AXES.self, ...AXES.other];
 const byKey = Object.fromEntries(ALL.map(a=>[a.k,a]));
@@ -363,9 +367,9 @@ function radar(svg, axes, scores, color, soft){
   axes.forEach((a,i)=>{const [x,y]=pt(i,R*(scores[a.k]??0)/100);h+=`<circle cx="${x}" cy="${y}" r="3.5" fill="${color}"/>`;});
   axes.forEach((a,i)=>{
     const [x,y]=pt(i,R+26), anchor=Math.abs(x-cx)<8?"middle":(x>cx?"start":"end"), dx=anchor==="start"?-6:anchor==="end"?6:0;
-    const label = a.animal ? `${a.name}·${a.animal}` : a.name;
-    h+=`<text x="${x+dx}" y="${y}" text-anchor="${anchor}" font-size="12" font-weight="600" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">${label}</text>`;
-    h+=`<text x="${x+dx}" y="${y+15}" text-anchor="${anchor}" font-size="11" fill="var(--muted)" font-family="IBM Plex Sans KR, sans-serif">${scores[a.k]??0}</text>`;
+    const sub = a.animal ? `${a.animal} · ${scores[a.k]??0}` : `${scores[a.k]??0}`;
+    h+=`<text x="${x+dx}" y="${y}" text-anchor="${anchor}" font-size="12.5" font-weight="600" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">${a.name}</text>`;
+    h+=`<text x="${x+dx}" y="${y+15}" text-anchor="${anchor}" font-size="11" fill="var(--muted)" font-family="IBM Plex Sans KR, sans-serif">${sub}</text>`;
   });
   svg.innerHTML=h;
 }
@@ -376,9 +380,11 @@ function initIntro(){
   const demo=AXES.self[3];
   $("variants").innerHTML = AXES.other.map(o=>`<figure><div class="ava" style="background:${demo.bg}">${avatar(demo.art,o.k)}</div><b style="color:var(--ink)">${o.name}</b><span>${o.item}</span></figure>`).join("");
   const saved = store.get();
-  if(saved && Array.isArray(saved.answers) && saved.answers.length===ITEMS.length && saved.answers.some(v=>v!=null)){
+  if(saved && Array.isArray(saved.answers) && saved.answers.some(v=>v!=null)){
+    setMode(saved.mode||"full");
+    if(saved.answers.length!==ITEMS.length){ setMode("quick"); return; }
     $("resumeBtn").hidden=false;
-    $("resumeBtn").onclick=()=>{ answers=saved.answers; const f=answers.findIndex(v=>v==null); if(f<0) showResult(); else { idx=f; startTest(); } };
+    $("resumeBtn").onclick=()=>{ setMode(saved.mode||"full"); answers=saved.answers; const f=answers.findIndex(v=>v==null); if(f<0) showResult(); else { idx=f; startTest(); } };
   }
 }
 
@@ -397,11 +403,14 @@ function render(){
 let advancing=false;
 function choose(v){
   if(advancing) return;
-  answers[idx]=v; store.set({answers}); render(); advancing=true;
+  answers[idx]=v; store.set({mode:MODE, answers}); render(); advancing=true;
   setTimeout(()=>{ advancing=false; if(idx<ITEMS.length-1){idx++;render();} else showResult(); },170);
 }
 $("prevBtn").onclick=()=>{ if(idx>0){idx--;render();} };
-$("startBtn").onclick=()=>{answers=new Array(ITEMS.length).fill(null); idx=0; store.set({answers}); startTest();};
+function begin(m){ setMode(m); answers=new Array(ITEMS.length).fill(null); idx=0; store.set({mode:MODE, answers}); $("aiOut").innerHTML=""; $("qaBox").hidden=true; $("aiSubmitRow").hidden=true; $("aiStart").hidden=false; $("aiStart").disabled=false; startTest(); }
+$("startBtn").onclick=()=>begin("quick");
+$("fullBtn").onclick=()=>begin("full");
+$("goFull").onclick=()=>begin("full");
 
 /* ===== scoring ===== */
 function score(){
@@ -454,10 +463,11 @@ function showResult(){
   bars($("barsSelf"), AXES.self, s, "var(--self)");
   bars($("barsOther"), AXES.other, s, "var(--other)");
   $("promptView").textContent = buildPrompt();
+  $("fullOffer").hidden = MODE==="full";
   drawStory();
   initAI();
 }
-$("retake").onclick=()=>{store.clear(); answers=new Array(ITEMS.length).fill(null); idx=0; $("aiOut").innerHTML=""; $("qaBox").hidden=true; $("aiSubmitRow").hidden=true; $("aiStart").hidden=false; $("aiStart").disabled=false; startTest();};
+$("retake").onclick=()=>{ store.clear(); begin(MODE); };
 
 /* ===== story card (1080x1920) ===== */
 let storyBlob=null;
@@ -542,7 +552,7 @@ ${AXES.self.map(a=>`- ${a.name}(${a.animal}): ${a.tag}. ${a.traits.join(" / ")}`
 [기준: 나는 무엇을 기준으로 사는가 — 1위가 수식어]
 ${AXES.other.map(a=>`- ${a.name}("${a.mod}"): ${a.line}`).join("\n")}`;
 function buildPrompt(){
-  return `너는 "${BRAND}"의 자기이해 인터뷰어다. 사용자가 80문항(1~5점) 검사를 마쳤고, 아래 10개 축 점수가 나왔다. 재미로 보는 자기이해 검사이며 심리 진단이 아니다.
+  return `너는 "${BRAND}"의 자기이해 인터뷰어다. 사용자가 ${ITEMS.length}문항(1~5점) 검사를 마쳤고, 아래 10개 축 점수가 나왔다. 재미로 보는 자기이해 검사이며 심리 진단이 아니다.
 
 ${AXIS_DEF}
 
@@ -558,43 +568,27 @@ ${scoreText()}
 규칙: 유형에 우열은 없다. 병리적 진단은 하지 않는다. 반말로 편하게, 한 메시지에 질문은 하나만. 사용자가 심한 고통을 드러내면 인터뷰를 멈추고 그 이야기를 먼저 듣는다.`;
 }
 
-/* ===== AI (GitHub Pages: 프록시 / claude.ai: window.claude) ===== */
+/* ===== AI (Claude 안에서만) ===== */
 const AI_RULES = `너는 "${BRAND}"라는 재미용 자기이해 검사의 해석가다. 심리 진단이 아니다.
 ${AXIS_DEF}
 유형에 우열은 없고, 병리적 진단은 하지 않는다. 20대 친구에게 말하듯 반말로 다정하게 쓴다.`;
-// GitHub Pages에서 부를 AI 프록시 주소 (README 참고). 비워두면 window.claude가 없는 곳에서는 AI 패널을 숨긴다.
-const AI_PROXY = "https://soksokzoo-ai-proxy.wpi-ai-proxy.workers.dev";
-// 프록시가 허용하는 주소(worker의 ALLOWED_ORIGINS와 같게). 여기서는 window.claude가 있어도
-// (브라우저 확장 프로그램 등이 넣어둘 수 있음) 항상 프록시를 쓴다.
-const PROXY_ORIGINS = ["https://shyun709.github.io"];
-
-let ai=null, ctl=null, aiQuestions=[];
+let sampleFn=null, ctl=null, aiQuestions=[];
 async function initAI(){
-  $("aiStatus").textContent=""; $("aiPanel").hidden=false; $("aiNudge").hidden=false;
-  $("aiStart").hidden=false; $("aiStart").disabled=false;
-  $("qaBox").hidden=true; $("aiSubmitRow").hidden=true; $("aiOut").innerHTML="";
-  ai=null;
-  const proxy = AI_PROXY ? AI_PROXY.replace(/\/+$/,"") : "";
-  if(proxy && PROXY_ORIGINS.includes(location.origin)){ ai=proxyBackend(proxy); return; }
-  if(window.claude?.use){
-    try{ const fn = await window.claude.use("sample"); if(fn) ai=claudeBackend(fn); }catch(e){}
-  }
-  if(!ai && proxy) ai=proxyBackend(proxy);
-  if(!ai) hideAI();
+  $("aiStatus").textContent="";
+  if(!window.claude?.use){ hideAI(); return; }
+  try{ sampleFn = await window.claude.use("sample"); }catch(e){ sampleFn=null; }
+  if(!sampleFn) hideAI();
 }
-function hideAI(){ $("aiPanel").hidden=true; $("aiNudge").hidden=true; }
+function hideAI(){ $("aiPanel").hidden=true; }
 function aiError(e){
   if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(e?.code)){ hideAI(); return ""; }
-  const m={rate_limited:"오늘 쓸 수 있는 AI 횟수를 다 썼거나 요청이 너무 많아. 내일 다시 해줘.",busy:"지금 AI 쪽이 붐벼. 잠시 뒤 다시 눌러줘.",session_expired:"로그인이 만료됐어. 다시 로그인해줘.",invalid_json:"질문을 만드는 데 실패했어. 다시 눌러줘.",forbidden_origin:"이 주소에서는 AI 서버를 쓸 수 없어.",refused:"AI가 이 내용에는 답하지 않았어. 답변을 조금 바꿔서 다시 해줘.",not_configured:"AI 서버 설정이 아직 안 끝났어.",cancelled:""};
+  const m={rate_limited:"요청이 너무 많아. 잠시 뒤 다시 눌러줘.",session_expired:"로그인이 만료됐어. 다시 로그인해줘.",invalid_json:"질문을 만드는 데 실패했어. 다시 눌러줘.",cancelled:""};
   return m[e?.code] ?? "연결이 끊겼어. 다시 시도해줘.";
 }
-const scrollIntoViewSmooth = el=>el.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"});
-$("aiNudgeBtn").onclick=()=>{ scrollIntoViewSmooth($("aiPanel")); if(!$("aiStart").hidden && !$("aiStart").disabled) $("aiStart").click(); };
-
-/* claude.ai 아티팩트 안: window.claude로 직접 부른다. 프롬프트는 worker/src/index.js와 같게 유지. */
-function claudeBackend(sampleFn){
-  return {
-    questions: ()=>sampleFn.json(`${AI_RULES}
+$("aiStart").onclick=async()=>{
+  if(!sampleFn) return;
+  $("aiStart").disabled=true; $("aiStatus").textContent="질문을 만드는 중…";
+  const prompt = `${AI_RULES}
 
 사용자 결과: ${RES.title}
 ${scoreText()}
@@ -603,10 +597,21 @@ ${scoreText()}
 ${itemText()}
 
 이 프로파일에서 가장 불확실한 지점(1·2위가 비슷한 축, 응답이 엇갈리는 축)을 가려낼 상황형 열린 질문 3개를 만들어라. 대학생·20대 일상 장면(조별과제, 동아리, 알바, 친구, 연애)이면 좋다. 정답을 암시하지 마라.
-JSON만 출력: {"questions":[{"axes":["축이름"],"q":"질문"}]}`,{modelTier:"default", cache:false}),
-    interpret: async(interview, onText, signal)=>{
-      const qa=interview.map((x,i)=>`Q${i+1}: ${x.q}\nA: ${x.a||"(무응답)"}`).join("\n\n");
-      const prompt=`${AI_RULES}
+JSON만 출력: {"questions":[{"axes":["축이름"],"q":"질문"}]}`;
+  try{
+    const data = await sampleFn.json(prompt,{modelTier:"default", cache:false});
+    aiQuestions=(data?.questions||[]).slice(0,3).filter(q=>q&&q.q);
+    if(!aiQuestions.length) throw {code:"invalid_json"};
+    $("qaBox").innerHTML = aiQuestions.map((q,i)=>`<div style="display:flex;flex-direction:column;gap:6px"><label for="ans${i}">Q${i+1}. ${esc(String(q.q))}</label><textarea id="ans${i}" placeholder="떠오르는 대로 편하게 써줘"></textarea></div>`).join("");
+    $("qaBox").hidden=false; $("aiSubmitRow").hidden=false; $("aiStart").hidden=true; $("aiStatus").textContent="";
+  }catch(e){ $("aiStatus").textContent=aiError(e); $("aiStart").disabled=false; }
+};
+$("aiStop").onclick=()=>ctl?.abort();
+$("aiSubmit").onclick=async()=>{
+  const qa=aiQuestions.map((q,i)=>`Q${i+1}: ${q.q}\nA: ${($("ans"+i).value||"(무응답)").trim()}`).join("\n\n");
+  ctl=new AbortController(); $("aiSubmit").disabled=true; $("aiStop").hidden=false;
+  $("aiOut").innerHTML=`<p class="status">해석을 쓰는 중… (30초~1분)</p>`;
+  const prompt=`${AI_RULES}
 
 [현재 결과] ${RES.title}
 ${scoreText()}
@@ -628,82 +633,8 @@ ${qa}
 #### 조심할 점
 - 2개와 작은 제안
 전체 500~800자. 인터뷰 답변을 짧게 인용해 근거를 보여라.`;
-      const {truncated}=await sampleFn(prompt,{modelTier:"default", cache:false, signal, onText:({text})=>onText(text)});
-      return {truncated};
-    }
-  };
-}
-
-/* 그 밖(GitHub Pages 등): 프록시. 프롬프트는 서버가 만들고, 여기선 응답만 보낸다. */
-function proxyBackend(base){
-  const post = async(path, body, signal)=>{
-    let res;
-    try{ res = await fetch(base+path,{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body), signal}); }
-    catch(e){ throw {code: e?.name==="AbortError"?"cancelled":"network"}; }
-    if(!res.ok){
-      let code="upstream"; try{ code=(await res.json())?.error?.code||code; }catch(e){}
-      throw {code};
-    }
-    return res;
-  };
-  return {
-    questions: async()=> (await post("/questions",{answers})).json(),
-    interpret: async(interview, onText, signal)=>{
-      const res = await post("/interpret",{answers, interview}, signal);
-      let text="", result={truncated:false};
-      try{
-        await readSSE(res, (ev,data)=>{
-          if(ev==="text"){ text+=data.t; onText(text); }
-          else if(ev==="reset"){ text=""; onText(text); }
-          else if(ev==="done"){ if(data.refused) throw {code:"refused", text}; result={truncated:!!data.truncated}; }
-          else if(ev==="error"){ throw {code:data.code, text}; }
-        });
-      }catch(e){
-        if(e?.code) throw e;
-        throw {code: e?.name==="AbortError"?"cancelled":"network", text};
-      }
-      return result;
-    }
-  };
-}
-async function readSSE(res, onEvent){
-  const reader=res.body.getReader(), dec=new TextDecoder(); let buf="";
-  for(;;){
-    const {value,done}=await reader.read();
-    if(done) break;
-    buf+=dec.decode(value,{stream:true}).replace(/\r\n/g,"\n");
-    let i;
-    while((i=buf.indexOf("\n\n"))>=0){
-      const chunk=buf.slice(0,i); buf=buf.slice(i+2);
-      let ev="message", data="";
-      for(const line of chunk.split("\n")){
-        if(line.startsWith("event:")) ev=line.slice(6).trim();
-        else if(line.startsWith("data:")) data+=line.slice(5).trim();
-      }
-      if(data) onEvent(ev, JSON.parse(data));
-    }
-  }
-}
-
-$("aiStart").onclick=async()=>{
-  if(!ai) return;
-  $("aiStart").disabled=true; $("aiStatus").textContent="질문을 만드는 중… (10~20초)";
   try{
-    const data = await ai.questions();
-    aiQuestions=(data?.questions||[]).slice(0,3).filter(q=>q&&q.q);
-    if(!aiQuestions.length) throw {code:"invalid_json"};
-    $("qaBox").innerHTML = aiQuestions.map((q,i)=>`<div style="display:flex;flex-direction:column;gap:6px"><label for="ans${i}">Q${i+1}. ${esc(String(q.q))}</label><textarea id="ans${i}" maxlength="800" placeholder="떠오르는 대로 편하게 써줘"></textarea></div>`).join("");
-    $("qaBox").hidden=false; $("aiSubmitRow").hidden=false; $("aiStart").hidden=true; $("aiStatus").textContent=""; $("aiNudge").hidden=true;
-    scrollIntoViewSmooth($("qaBox"));
-  }catch(e){ $("aiStatus").textContent=aiError(e); $("aiStart").disabled=false; }
-};
-$("aiStop").onclick=()=>ctl?.abort();
-$("aiSubmit").onclick=async()=>{
-  const interview=aiQuestions.map((q,i)=>({axes:(q.axes||[]).map(String), q:String(q.q), a:($("ans"+i).value||"").trim()}));
-  ctl=new AbortController(); $("aiSubmit").disabled=true; $("aiStop").hidden=false;
-  $("aiOut").innerHTML=`<p class="status">해석을 쓰는 중… (30초~1분)</p>`;
-  try{
-    const {truncated}=await ai.interpret(interview, text=>{$("aiOut").innerHTML=md(text);}, ctl.signal);
+    const {truncated}=await sampleFn(prompt,{modelTier:"default", cache:false, signal:ctl.signal, onText:({text})=>{$("aiOut").innerHTML=md(text);}});
     if(truncated) $("aiOut").insertAdjacentHTML("beforeend",`<p class="status">답이 길어서 중간에 잘렸어.</p>`);
   }catch(e){
     $("aiOut").innerHTML=e?.text?md(e.text):"";
